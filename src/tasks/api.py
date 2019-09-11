@@ -12,7 +12,7 @@ class Task(NamedTuple):
 # custom exceptions
 class TasksException(Exception):
     """A tasks error has occurred."""
-
+    
 
 class UninitializedDatabase(TasksException):
     """Call tasks.start_tasks_db() before other functions."""
@@ -20,7 +20,7 @@ class UninitializedDatabase(TasksException):
 def add(task: Task) -> int:
     if not isinstance(task, Task):
         raise TypeError('task must be Task object')
-    return task.id
+    return 1
 
 def get(task_id):  # type: (int) -> Task
     """Return a Task object with matching task_id."""

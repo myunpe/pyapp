@@ -28,7 +28,6 @@ RUN apt-get update \
     #
     # Install pylint
     && pip --disable-pip-version-check --no-cache-dir install pylint \
-    #
     # Update Python environment based on requirements.txt (if presenet)
     && if [ -f "/tmp/pip-tmp/requirements.txt" ]; then pip --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt; fi \
     && rm -rf /tmp/pip-tmp \
@@ -45,6 +44,7 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=

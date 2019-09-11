@@ -2,13 +2,14 @@
 
 from setuptools import setup, find_packages
 
+# noinspection PyPackageRequirements
 setup(
     name='tasks',
     version='0.1.0',
     license='proprietary',
     description='Minimal Project Task Management',
 
-    author='Brian Okken',
+    author='myun',
     author_email='Please use pythontesting.net contact form.',
     url='https://pragprog.com/book/bopytest',
 
