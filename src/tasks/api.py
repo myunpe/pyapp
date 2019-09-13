@@ -1,28 +1,49 @@
-from typing import NamedTuple
+"""Main API for tasks project."""
+
 from six import string_types
+from typing import List, NamedTuple
 
 
 class Task(NamedTuple):
-    """namedtuple Task"""
+    """ nametuple Task """
     summary: str = None
     owner: str = None
     done: bool = False
     id: int = None
 
+
 # custom exceptions
 class TasksException(Exception):
     """A tasks error has occurred."""
-    
+
 
 class UninitializedDatabase(TasksException):
     """Call tasks.start_tasks_db() before other functions."""
 
+
 def add(task: Task) -> int:
+    """Add a task (a Task object) to the tasks database."""
     if not isinstance(task, Task):
         raise TypeError('task must be Task object')
-    return 1
+    if not isinstance(task.summary, string_types):
+        raise ValueError('task.summary must be string')
+    if not ((task.owner is None) or
+            isinstance(task.owner, string_types)):
+        raise ValueError('task.owner must be string or None)')
+    # We test for this in ch5, so keep this commented out to let
+    # the ch5 test fail.
+    #
+    # if not isinstance(task.done, bool):
+    #     raise ValueError('task.done must be True or False')
+    if task.id is not None:
+        raise ValueError('task.id must None')
+    if _tasksdb is None:
+        raise UninitializedDatabase()
+    task_id = _tasksdb.add(task._asdict())
+    return task_id
 
-def get(task_id):  # type: (int) -> Task
+
+def get(task_id: int) -> Task:
     """Return a Task object with matching task_id."""
     if not isinstance(task_id, int):
         raise TypeError('task_id must be an int')
@@ -32,7 +53,7 @@ def get(task_id):  # type: (int) -> Task
     return Task(**task_dict)
 
 
-def list_tasks(owner=None):  # type: (str|None) -> list of Task
+def list_tasks(owner=None) -> List[Task]:  # type: (str|None) -> list of Task
     """Return a list of Task objects."""
     if owner and not isinstance(owner, string_types):
         raise TypeError('owner must be a string')
@@ -41,14 +62,14 @@ def list_tasks(owner=None):  # type: (str|None) -> list of Task
     return [Task(**t) for t in _tasksdb.list_tasks(owner)]
 
 
-def count():  # type: (None) -> int
+def count() -> int:
     """Return the number of tasks in db."""
     if _tasksdb is None:
         raise UninitializedDatabase()
     return _tasksdb.count()
 
 
-def update(task_id, task):  # type: (int, Task) -> None
+def update(task_id: int, task: Task) -> None:
     """Modify task in db with given task_id."""
     if not isinstance(task_id, int):
         raise TypeError('task_id must be an int')
@@ -64,7 +85,7 @@ def update(task_id, task):  # type: (int, Task) -> None
     _tasksdb.update(task_id, current_task)
 
 
-def delete(task_id):  # type: (int) -> None
+def delete(task_id) -> None:
     """Remove a task from db with given task_id."""
     if not isinstance(task_id, int):
         raise TypeError('task_id must be an int')
@@ -73,14 +94,14 @@ def delete(task_id):  # type: (int) -> None
     _tasksdb.delete(task_id)
 
 
-def delete_all():  # type: () -> None
+def delete_all() -> None:
     """Remove all tasks from db."""
     if _tasksdb is None:
         raise UninitializedDatabase()
     _tasksdb.delete_all()
 
 
-def unique_id():  # type: () -> int
+def unique_id() -> int:
     """Return an integer that does not exist in the db."""
     if _tasksdb is None:
         raise UninitializedDatabase()
@@ -90,7 +111,7 @@ def unique_id():  # type: () -> int
 _tasksdb = None
 
 
-def start_tasks_db(db_path, db_type):  # type: (str, str) -> None
+def start_tasks_db(db_path: str, db_type: str) -> None:
     """Connect API functions to a db."""
     if not isinstance(db_path, string_types):
         raise TypeError('db_path must be a string')
@@ -105,7 +126,7 @@ def start_tasks_db(db_path, db_type):  # type: (str, str) -> None
         raise ValueError("db_type must be a 'tiny' or 'mongo'")
 
 
-def stop_tasks_db():  # type: () -> None
+def stop_tasks_db() -> None:
     """Disconnect API functions from db."""
     global _tasksdb
     _tasksdb.stop_tasks_db()

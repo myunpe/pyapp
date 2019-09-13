@@ -3,14 +3,14 @@ import tasks
 from tasks import Task
 import pytest
 
-# @pytest.fixture(autouse=True)
-# def initialized_tasks_db(tmpdir: str):
-#     """テスト前にDB接続"""
-#     tasks.start_tasks_db(str(tmpdir), 'tiny')
+@pytest.fixture(autouse=True)
+def initialized_tasks_db(tmpdir: str):
+    """テスト前にDB接続"""
+    tasks.start_tasks_db(str(tmpdir), 'tiny')
 
-#     yield
+    yield
 
-#     tasks.stop_tasks_db()
+    tasks.stop_tasks_db()
 
 
 def test_defaults():
